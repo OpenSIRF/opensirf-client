@@ -1,5 +1,5 @@
 lazy val commonSettings = Seq(
-  organization := "org.opensirf.client",
+  organization := "org.opensirf",
   version := "1.0.0",
   name := "opensirf-client"
 )
@@ -22,8 +22,10 @@ publishMavenStyle := false
 isSnapshot := true
 
 libraryDependencies += "org.glassfish.jersey.core" % "jersey-client" % "2.22.2"
-libraryDependencies += "org.opensirf.core" % "opensirf-core" % "1.0.0"
-libraryDependencies += "org.opensirf.jaxrs" % "opensirf-jax-rs" % "1.0.0"
+libraryDependencies += "org.opensirf" % "opensirf-core" % "1.0.0"
+libraryDependencies += "org.opensirf" % "opensirf-jax-rs" % "1.0.0"
 
 publishArtifact in (Compile, packageDoc) := false
 publishArtifact in (Compile, packageSrc) := false
+
+resolvers += Resolver.url("SIRF Artifactory", url("http://200.144.189.109:58082/artifactory"))(Resolver.ivyStylePatterns)

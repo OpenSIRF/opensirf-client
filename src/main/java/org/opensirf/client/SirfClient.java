@@ -38,6 +38,7 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.opensirf.catalog.SIRFCatalog;
 import org.opensirf.jaxrs.config.SIRFConfiguration;
 
 /**
@@ -66,10 +67,13 @@ public class SirfClient {
 	private <T> T getObject(String uri, Class<T> c) {
 		return doRequest(uri).readEntity(c);
 	}
-	
+
 	public SIRFConfiguration getConfiguration() {
 		return getObject("config", SIRFConfiguration.class);
-		//return doRequest("config").readEntity(SIRFConfiguration.class);
+	}
+	
+	public SIRFCatalog getCatalog(String containerName) {
+		return getObject("container/" + containerName + "/catalog", SIRFCatalog.class);
 	}
 	
 	private String mediaType;
