@@ -1,1 +1,1 @@
-# opensirf-client
+OpenSIRF Client README
