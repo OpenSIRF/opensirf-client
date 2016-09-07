@@ -22,6 +22,8 @@ publishMavenStyle := false
 isSnapshot := true
 
 libraryDependencies += "org.glassfish.jersey.core" % "jersey-client" % "2.22.2"
+libraryDependencies += "org.opensirf.core" % "opensirf-core" % "1.0.0"
+libraryDependencies += "org.opensirf.jaxrs" % "opensirf-jax-rs" % "1.0.0"
 
 publishArtifact in (Compile, packageDoc) := false
 publishArtifact in (Compile, packageSrc) := false

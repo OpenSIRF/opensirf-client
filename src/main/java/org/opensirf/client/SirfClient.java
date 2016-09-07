@@ -38,26 +38,41 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.opensirf.jaxrs.config.SIRFConfiguration;
+
 /**
  * @author pviana
  *
  */
 public class SirfClient {
 
-	public SirfClient(String endpoint, String uri) {
-		this(endpoint, uri, MediaType.APPLICATION_JSON);
+	public SirfClient(String endpoint) {
+		this(endpoint, MediaType.APPLICATION_JSON);
 	}
 	
-	public SirfClient(String endpoint, String uri, String mediaType) {
+	public SirfClient(String endpoint, String mediaType) {
+		this.endpoint = endpoint;
+		this.mediaType = mediaType;
+	}
+	
+	private Response doRequest(String uri) {
 		Client client = ClientBuilder.newClient();
 		WebTarget resource = client.target("http://" + endpoint + "/sirf/" + uri);
 		request = resource.request();
 		request.accept(mediaType);
-	}
-	
-	public Response doRequest() {
 		return request.get();
 	}
 	
+	private <T> T getObject(String uri, Class<T> c) {
+		return doRequest(uri).readEntity(c);
+	}
+	
+	public SIRFConfiguration getConfiguration() {
+		return getObject("config", SIRFConfiguration.class);
+		//return doRequest("config").readEntity(SIRFConfiguration.class);
+	}
+	
+	private String mediaType;
+	private String endpoint;
 	private Builder request;
 }
