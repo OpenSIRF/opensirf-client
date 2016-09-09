@@ -40,6 +40,7 @@ import javax.ws.rs.core.Response;
 
 import org.opensirf.catalog.SIRFCatalog;
 import org.opensirf.jaxrs.config.SIRFConfiguration;
+import org.opensirf.obj.PreservationObjectInformation;
 
 /**
  * @author pviana
@@ -68,6 +69,16 @@ public class SirfClient {
 		return doRequest(uri).readEntity(c);
 	}
 
+	public byte[] getPreservationObject(String containerName, String uuid) {
+		return getObject("container/" + containerName + "/" + uuid + "/data", byte[].class);
+	}
+	
+	public PreservationObjectInformation getPreservationObjectInformation(String containerName,
+			String uuid) {
+		return getObject("container/" + containerName + "/" + uuid,
+				PreservationObjectInformation.class);
+	}
+	
 	public SIRFConfiguration getConfiguration() {
 		return getObject("config", SIRFConfiguration.class);
 	}
