@@ -31,14 +31,18 @@
  */
 package org.opensirf.client;
 
+import java.io.FileNotFoundException;
+
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Invocation.Builder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.xml.bind.JAXBException;
 
 import org.opensirf.catalog.SIRFCatalog;
+import org.opensirf.format.GenericUnmarshaller;
 import org.opensirf.jaxrs.config.SIRFConfiguration;
 import org.opensirf.obj.PreservationObjectInformation;
 
@@ -79,8 +83,10 @@ public class SirfClient {
 				PreservationObjectInformation.class);
 	}
 	
-	public SIRFConfiguration getConfiguration() {
-		return getObject("config", SIRFConfiguration.class);
+	public SIRFConfiguration getConfiguration() throws FileNotFoundException, JAXBException {
+		String configResponse = getObject("config", String.class);
+		return GenericUnmarshaller.unmarshal("application/json", configResponse,
+				SIRFConfiguration.class);
 	}
 	
 	public SIRFCatalog getCatalog(String containerName) {
