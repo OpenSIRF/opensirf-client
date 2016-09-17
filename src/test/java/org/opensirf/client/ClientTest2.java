@@ -1,7 +1,7 @@
 /*
- * OpenSIRF Core
+ * OpenSIRF
  * 
- * Copyright IBM Corporation 2015.
+ * Copyright IBM Corporation 2016.
  * All Rights Reserved.
  * 
  * MIT License:
@@ -32,21 +32,26 @@
 
 package org.opensirf.client;
 
+import java.io.File;
+import java.io.FileInputStream;
+
+import javax.ws.rs.core.Response;
+
 import org.junit.Test;
-import org.opensirf.format.GenericMarshaller;
-import org.opensirf.jaxrs.config.SIRFConfiguration;
+import org.opensirf.catalog.SIRFCatalog;
+import org.opensirf.format.GenericUnmarshaller;
 
 /**
  * @author pviana
  *
  */
-public class SirfClientTest {
-
+public class ClientTest2 {
 	@Test
 	public void testClient() throws Exception {
 		SirfClient c = new SirfClient("127.0.0.1:8080");
-		SIRFConfiguration config = c.getConfiguration();
-		System.out.println(GenericMarshaller.marshal("application/json", config));
-		System.out.println("c container null == " + (config.getContainerConfiguration() == null));
+		
+		SIRFCatalog catalog = GenericUnmarshaller.unmarshal("application/json", new
+				FileInputStream(new File("/home/phil/z.json")), SIRFCatalog.class);
+		Response r = c.pushCatalog("philContainer", catalog);
 	}
 }
