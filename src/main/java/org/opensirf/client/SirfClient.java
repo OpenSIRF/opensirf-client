@@ -39,6 +39,7 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation.Builder;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -52,6 +53,7 @@ import org.opensirf.container.ProvenanceInformation;
 import org.opensirf.format.GenericUnmarshaller;
 import org.opensirf.jaxrs.config.SIRFConfiguration;
 import org.opensirf.obj.PreservationObjectInformation;
+import org.opensirf.storage.monitor.model.StorageMetadata;
 
 /**
  * @author pviana
@@ -75,7 +77,7 @@ public class SirfClient {
 		request.accept(mediaType);
 		return request.method(method);
 	}
-	
+
 	private Response doGet(String uri) {
 		return doRequest("GET", uri);
 	}
@@ -184,9 +186,34 @@ public class SirfClient {
 		
 		return r;
 	}
+	
+	public StorageMetadata getStorageMetadata(String storagePath) {
+		String uri = "storageMetadata";		
+		FormDataMultiPart mp = new FormDataMultiPart();
+		FormDataBodyPart pathPart = new FormDataBodyPart("storagePath", storagePath, MediaType.TEXT_PLAIN_TYPE);
+		MultiPart multipartEntity = mp.bodyPart(pathPart);
+		Entity<MultiPart> e = Entity.entity(multipartEntity, MediaType.MULTIPART_FORM_DATA);
+		
+		StorageMetadata metadata = postForm(uri, e).readEntity(StorageMetadata.class);
+		try {
+			mp.close();
+		} catch(IOException ioe) {
+			throw new RuntimeException("IO exception closing form data multipart on SIRF client");
+		}
+		
+		return metadata;
+	}
 
 	private <T> Response doPost(String uri, Entity<T> o) {
 		return doRequest("POST", uri, o);
+	}
+	
+	private Response postForm(String uri, Entity<MultiPart> form) {
+		Client client = ClientBuilder.newClient();
+		client.register(MultiPartFeature.class);
+		WebTarget resource = client.target("http://" + endpoint + "/sirf/" + uri);
+		request = resource.request(MediaType.APPLICATION_JSON_TYPE);
+		return request.post(form);
 	}
 	
 	private <T> Response doRequest(String method, String uri, Entity<T> e) {
@@ -194,9 +221,10 @@ public class SirfClient {
 		client.register(MultiPartFeature.class);
 		WebTarget resource = client.target("http://" + endpoint + "/sirf/" + uri);
 		request = resource.request();
-		if(e != null) {
+		
+		if(e != null)
 			request.header("Content-type", e.getMediaType());
-		}
+		
 		return request.method(method, e);
 	}
 	
