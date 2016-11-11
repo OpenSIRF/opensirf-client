@@ -39,7 +39,6 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation.Builder;
 import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -49,6 +48,7 @@ import org.glassfish.jersey.media.multipart.MultiPart;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.media.multipart.file.StreamDataBodyPart;
 import org.opensirf.catalog.SIRFCatalog;
+import org.opensirf.container.MagicObject;
 import org.opensirf.container.ProvenanceInformation;
 import org.opensirf.format.GenericUnmarshaller;
 import org.opensirf.jaxrs.config.SIRFConfiguration;
@@ -95,7 +95,10 @@ public class SirfClient {
 	}
 	
 	private <T> T getObject(String uri, Class<T> c) {
-		return doGet(uri).readEntity(c);
+		Response r = doGet(uri);
+		if(r.getStatus() == Response.Status.NOT_FOUND.getStatusCode())
+			return null;
+		return r.readEntity(c);
 	}
 
 	public byte[] getPreservationObject(String containerName, String uuid) {
@@ -133,6 +136,7 @@ public class SirfClient {
 	}
 	
 	public Response deleteContainer(String containerName) {
+		System.out.println("INVOKING DELETE CONTAINER");
 		return doDelete("container/" + containerName);
 	}
 	
@@ -185,6 +189,10 @@ public class SirfClient {
 		}
 		
 		return r;
+	}
+	
+	public MagicObject getMagicObject(String containerName) {
+		return getObject("container/" + containerName, MagicObject.class);
 	}
 	
 	public StorageMetadata getStorageMetadata(String storagePath) {
