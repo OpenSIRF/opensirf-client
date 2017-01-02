@@ -42,7 +42,7 @@ import org.opensirf.storage.monitor.model.StorageMetadata;
 public class StorageMonitorClientTest {
 	@Test
 	public void testStorageMonitor() {
-		SirfClient cli = new SirfClient("localhost:8080/opensirf-storage-monitor-1.0.0");
+		SirfClient cli = new SirfClient("localhost:8088/opensirf-storage-monitor");
 		StorageMetadata m = cli.getStorageMetadata("/home");
 		System.out.println(m.getFreeDiskSpace() + " " + m.getSpaceInMegabytes());
 	}

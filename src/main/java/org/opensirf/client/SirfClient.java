@@ -136,7 +136,6 @@ public class SirfClient {
 	}
 	
 	public Response deleteContainer(String containerName) {
-		System.out.println("INVOKING DELETE CONTAINER");
 		return doDelete("container/" + containerName);
 	}
 	
