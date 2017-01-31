@@ -50,8 +50,7 @@ import org.glassfish.jersey.media.multipart.file.StreamDataBodyPart;
 import org.opensirf.catalog.SIRFCatalog;
 import org.opensirf.container.MagicObject;
 import org.opensirf.container.ProvenanceInformation;
-import org.opensirf.format.GenericUnmarshaller;
-import org.opensirf.jaxrs.config.SIRFConfiguration;
+import org.opensirf.format.CoreUnmarshaller;
 import org.opensirf.obj.PreservationObjectInformation;
 import org.opensirf.storage.monitor.model.StorageMetadata;
 
@@ -115,7 +114,7 @@ public class SirfClient {
 		String provResponse = getObject("container/" + containerName + "/provenance.po.json/data",
 				String.class);
 		mediaType = previousMediaType;
-		return GenericUnmarshaller.unmarshal("application/json", provResponse, 
+		return CoreUnmarshaller.unmarshal("application/json", provResponse, 
 				ProvenanceInformation.class);
 	}
 	
@@ -125,11 +124,11 @@ public class SirfClient {
 				PreservationObjectInformation.class);
 	}
 	
-	public SIRFConfiguration getConfiguration() {
-		String configResponse = getObject("config", String.class);
-		return GenericUnmarshaller.unmarshal("application/json", configResponse,
-				SIRFConfiguration.class);
-	}
+//	public SIRFConfiguration getConfiguration() {
+//		String configResponse = getObject("config", String.class);
+//		return CoreUnmarshaller.unmarshal("application/json", configResponse,
+//				SIRFConfiguration.class);
+//	}
 	
 	public Response createContainer(String containerName) {
 		return doPut("container/" + containerName);
